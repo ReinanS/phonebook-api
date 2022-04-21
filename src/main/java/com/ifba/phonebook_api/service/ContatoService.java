@@ -15,6 +15,9 @@ import com.ifba.phonebook_api.requests.EnderecoRequestOut;
 import com.ifba.phonebook_api.requests.NumeroContatoPostRequestBody;
 import com.ifba.phonebook_api.requests.NumeroContatoRequestOut;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,6 +56,21 @@ public class ContatoService {
     public List<ContatoRequestOut> listAll() {
         List<Contato> contatos = contatoRepository.findAll();
         return ContatoRequestOut.converte(contatos);
+    }
+
+    public Page<ContatoRequestOut> list(String nome, int pagina, int qtd) {
+        PageRequest pageable = PageRequest.of(pagina, qtd);
+        return ContatoRequestOut.converteList(contatoRepository.findByNome(nome, pageable));
+    }
+
+
+    public Page<ContatoRequestOut> list(int pagina, int qtd) throws Exception {
+        if(qtd > 3) {
+            throw new Exception("Máximo de 3 Registros por página");
+        }
+
+		Pageable pageable = PageRequest.of(pagina, qtd);
+        return ContatoRequestOut.converteList(contatoRepository.findAll(pageable));
     }
 
     public ContatoRequestOut detail(Long id) {

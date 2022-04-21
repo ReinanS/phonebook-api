@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import com.ifba.phonebook_api.model.Contato;
 import com.ifba.phonebook_api.model.Endereco;
 
+import org.springframework.data.domain.Page;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,5 +32,9 @@ public class ContatoRequestOut {
 
     public static List<ContatoRequestOut> converte(List<Contato> lista) {
         return lista.stream().map(ContatoRequestOut::new).collect(Collectors.toList());
+    }
+
+    public static Page<ContatoRequestOut> converteList(Page<Contato> page) {
+        return page.map(ContatoRequestOut::new);
     }
 }

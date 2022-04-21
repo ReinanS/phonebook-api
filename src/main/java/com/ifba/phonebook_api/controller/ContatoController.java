@@ -10,6 +10,7 @@ import com.ifba.phonebook_api.requests.ContatoPutRequestBody;
 import com.ifba.phonebook_api.requests.ContatoRequestOut;
 import com.ifba.phonebook_api.service.ContatoService;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
@@ -36,6 +38,16 @@ public class ContatoController {
     public ResponseEntity<List<ContatoRequestOut>> listAll() {
         List<ContatoRequestOut> contatos = contatoService.listAll();
         return new ResponseEntity<List<ContatoRequestOut>>(contatos, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Retorna os contatos por página")
+    @GetMapping("/page/{pagina}")
+    public Page<ContatoRequestOut> list(@RequestParam(required = false) String nome, @PathVariable int pagina, @RequestParam int qtd) throws Exception  {
+        if(nome != null){
+            return contatoService.list(nome, pagina, qtd);
+        }
+
+        return contatoService.list(pagina, qtd);
     }
 
     @ApiOperation(value = "Salva um contato")
@@ -67,6 +79,4 @@ public class ContatoController {
         contatoService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
 }
