@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import com.ifba.phonebook_api.model.Contato;
 import com.ifba.phonebook_api.model.Endereco;
-import com.ifba.phonebook_api.model.NumeroContato;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,14 +18,14 @@ public class ContatoRequestOut {
     private String nome;
     private String email;
     private Endereco endereco;
-    private List<NumeroContato> numeroContato;
+    private List<NumeroContatoRequestOut> numerosContatos;
 
     public ContatoRequestOut(Contato contato) {
         this.id = contato.getId();
         this.nome = contato.getNome();
         this.email = contato.getEmail();
         this.endereco = contato.getEndereco();
-        this.numeroContato = contato.getNumeroContato();
+        this.numerosContatos = NumeroContatoRequestOut.converte(contato.getNumeroContato());
     }
 
     public static List<ContatoRequestOut> converte(List<Contato> lista) {

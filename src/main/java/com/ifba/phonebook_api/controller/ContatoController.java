@@ -2,17 +2,21 @@ package com.ifba.phonebook_api.controller;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import com.ifba.phonebook_api.requests.ContatoRequestIn;
+import com.ifba.phonebook_api.requests.ContatoPostRequestBody;
+import com.ifba.phonebook_api.requests.ContatoPutRequestBody;
 import com.ifba.phonebook_api.requests.ContatoRequestOut;
 import com.ifba.phonebook_api.service.ContatoService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +40,7 @@ public class ContatoController {
 
     @ApiOperation(value = "Salva um contato")
     @PostMapping
-    public ResponseEntity<ContatoRequestOut> save(@Valid @RequestBody ContatoRequestIn contatoRequestIn) throws Exception {
+    public ResponseEntity<ContatoRequestOut> save(@Valid @RequestBody ContatoPostRequestBody contatoRequestIn) throws Exception {
         ContatoRequestOut contato = contatoService.save(contatoRequestIn);
         return new ResponseEntity<ContatoRequestOut>(contato, HttpStatus.CREATED);
     }
@@ -47,5 +51,22 @@ public class ContatoController {
         ContatoRequestOut contato = contatoService.detail(id);
         return new ResponseEntity<ContatoRequestOut>(contato, HttpStatus.OK);
     }
+
+    @ApiOperation(value = "Atualiza um contato")
+    @PutMapping
+    @Transactional
+    public ResponseEntity<?> replace(@Valid @RequestBody ContatoPutRequestBody contatoPutRequestBody) {
+        contatoService.replace(contatoPutRequestBody);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ApiOperation(value = "Deleta um contato")
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        contatoService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 
 }

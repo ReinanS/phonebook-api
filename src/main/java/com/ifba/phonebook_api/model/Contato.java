@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -36,7 +37,7 @@ public class Contato {
     @ManyToOne 
     private Endereco endereco;
 
-    // Pesquisar Validacao para limitar a quantidade permitida de números
+    @OneToMany
     @ElementCollection
     @CollectionTable(name="numeros")
     private List<NumeroContato> numeroContato;

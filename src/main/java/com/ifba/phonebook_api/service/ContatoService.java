@@ -8,11 +8,11 @@ import com.ifba.phonebook_api.model.Endereco;
 import com.ifba.phonebook_api.model.NumeroContato;
 import com.ifba.phonebook_api.repository.ContatoRepository;
 import com.ifba.phonebook_api.requests.ContatoPutRequestBody;
-import com.ifba.phonebook_api.requests.ContatoRequestIn;
+import com.ifba.phonebook_api.requests.ContatoPostRequestBody;
 import com.ifba.phonebook_api.requests.ContatoRequestOut;
 import com.ifba.phonebook_api.requests.EnderecoPostRequestBody;
 import com.ifba.phonebook_api.requests.EnderecoRequestOut;
-import com.ifba.phonebook_api.requests.NumeroContatoRequestIn;
+import com.ifba.phonebook_api.requests.NumeroContatoPostRequestBody;
 import com.ifba.phonebook_api.requests.NumeroContatoRequestOut;
 
 import org.springframework.http.HttpStatus;
@@ -34,7 +34,7 @@ public class ContatoService {
         return contatoRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contato não encontrado"));
     }
 
-    public ContatoRequestOut save(ContatoRequestIn contatoRequestIn) throws Exception {
+    public ContatoRequestOut save(ContatoPostRequestBody contatoRequestIn) throws Exception {
 
         List<NumeroContato> numerosContatos = saveContatos(contatoRequestIn.getNumerosContato());
         Endereco endereco = saveEndereco(contatoRequestIn.getEndereco());
@@ -48,6 +48,43 @@ public class ContatoService {
 
         contatoRepository.save(contato);
         return new ContatoRequestOut(contato);
+    }
+
+    public List<ContatoRequestOut> listAll() {
+        List<Contato> contatos = contatoRepository.findAll();
+        return ContatoRequestOut.converte(contatos);
+    }
+
+    public ContatoRequestOut detail(Long id) {
+        return new ContatoRequestOut(findByIdOrThrowNotFoundRequestException(id));
+    }
+
+    public void replace(ContatoPutRequestBody contatoPutRequestBody) {
+        
+        // Substitue os contatos
+        enderecoService.replace(contatoPutRequestBody.getEndereco());
+
+         // Substitue os contatos
+        contatoPutRequestBody.getNumerosContatos().forEach(nContato -> {
+            numeroContatoService.replace(nContato);
+        });
+
+        // Substitue os contatos
+        Contato contatoSaved = findByIdOrThrowNotFoundRequestException(contatoPutRequestBody.getId());
+
+        Contato contato = Contato.builder()
+                .id(contatoSaved.getId())
+                .nome(contatoPutRequestBody.getNome())
+                .email(contatoPutRequestBody.getEmail())
+                .endereco(contatoSaved.getEndereco())
+                .numeroContato(contatoSaved.getNumeroContato())
+                .build();
+
+        contatoRepository.save(contato);
+    }
+
+    public void delete(Long id) {
+        contatoRepository.delete(findByIdOrThrowNotFoundRequestException(id));
     }
 
     private Endereco saveEndereco(EnderecoPostRequestBody enderecoPostRequestBody) {
@@ -65,7 +102,7 @@ public class ContatoService {
     }
 
 
-    private List<NumeroContato> saveContatos(List<NumeroContatoRequestIn> numsContatosBody) throws Exception {
+    private List<NumeroContato> saveContatos(List<NumeroContatoPostRequestBody> numsContatosBody) throws Exception {
         List<NumeroContato> numContatos = new ArrayList<>();
 
         if(numsContatosBody.size() > 3) {
@@ -85,34 +122,5 @@ public class ContatoService {
         });    
         
         return numContatos;
-    
     }
-
-    public List<ContatoRequestOut> listAll() {
-        List<Contato> contatos = contatoRepository.findAll();
-        return ContatoRequestOut.converte(contatos);
-    }
-
-    public ContatoRequestOut detail(Long id) {
-        return new ContatoRequestOut(findByIdOrThrowNotFoundRequestException(id));
-    }
-
-
-    // public void replace(Long id, ContatoPutRequestBody contatoPutRequestBody) {
-    //     Contato contatoSaved = findByIdOrThrowNotFoundRequestException(id);
-    //     Endereco enderecoSaved = contatoSaved.getEndereco();
-    //     List<NumeroContato>  nContatosSaved = contatoSaved.getNumeroContato();
-
-    //     enderecoService.replace(enderecoSaved.getId(), contatoPutRequestBody.getEnderecoPutRequestBody());
-    //     Endereco enderecoReplaced = enderecoService.findByIdOrThrowNotFoundRequestException(enderecoSaved.getId());
-
-
-    //     Contato contato = Contato.builder()
-    //             .id(contatoSaved.getId())
-    //             .nome(contatoPutRequestBody.getNome())
-    //             .email(contatoPutRequestBody.getEmail())
-    //             .endereco(enderecoReplaced)
-    //             .numeroContato(numeroContato)
-    //             .build();
-    // }
 }

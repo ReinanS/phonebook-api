@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class ContatoRequestIn {
+public class ContatoPostRequestBody {
 
     @NotBlank
     private String nome;
@@ -20,6 +20,6 @@ public class ContatoRequestIn {
 
     private EnderecoPostRequestBody endereco;
 
-    private List<NumeroContatoRequestIn> numerosContato;
+    private List<NumeroContatoPostRequestBody> numerosContato;
     
 }
