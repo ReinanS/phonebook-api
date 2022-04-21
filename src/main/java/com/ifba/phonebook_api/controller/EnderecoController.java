@@ -53,10 +53,10 @@ public class EnderecoController {
     }
 
     @ApiOperation(value = "Atualiza um endereco")
-    @PutMapping("/{id}")
+    @PutMapping
     @Transactional
-    public ResponseEntity<?> atualizar(@Valid @PathVariable @RequestBody Long id, EnderecoPutRequestBody enderecoPutRequestBody) {
-        enderecoService.replace(id, enderecoPutRequestBody);
+    public ResponseEntity<?> atualizar(@Valid @RequestBody EnderecoPutRequestBody enderecoPutRequestBody) {
+        enderecoService.replace(enderecoPutRequestBody);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

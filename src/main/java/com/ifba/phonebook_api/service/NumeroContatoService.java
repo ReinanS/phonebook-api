@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.ifba.phonebook_api.model.NumeroContato;
 import com.ifba.phonebook_api.repository.NumeroContatoRepository;
-import com.ifba.phonebook_api.requests.NumeroContatoRequestIn;
+import com.ifba.phonebook_api.requests.NumeroContatoPutRequestBody;
+import com.ifba.phonebook_api.requests.NumeroContatoPostRequestBody;
 import com.ifba.phonebook_api.requests.NumeroContatoRequestOut;
 
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class NumeroContatoService {
         return numeroContatoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Número não encontrado"));
     }
 
-    public NumeroContatoRequestOut save(NumeroContatoRequestIn numeroContatoPostRequestBody) {
+    public NumeroContatoRequestOut save(NumeroContatoPostRequestBody numeroContatoPostRequestBody) {
         NumeroContato numeroContato = NumeroContato.builder()
             .numero(numeroContatoPostRequestBody.getNumero())
             .categoria(numeroContatoPostRequestBody.getCategoria())
@@ -41,8 +42,8 @@ public class NumeroContatoService {
         return NumeroContatoRequestOut.converte(numerosContatos);
     }
 
-    public void replace(Long id, NumeroContatoRequestIn numeroContatoPutRequestBody) {
-        NumeroContato numeroContatoSaved = findByIdOrThrowNotFoundRequestException(id);
+    public void replace(NumeroContatoPutRequestBody numeroContatoPutRequestBody) {
+        NumeroContato numeroContatoSaved = findByIdOrThrowNotFoundRequestException(numeroContatoPutRequestBody.getId());
         NumeroContato numeroContato = NumeroContato.builder()
                         .id(numeroContatoSaved.getId())
                         .numero(numeroContatoPutRequestBody.getNumero())

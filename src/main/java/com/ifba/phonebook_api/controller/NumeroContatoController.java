@@ -5,7 +5,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import com.ifba.phonebook_api.requests.NumeroContatoRequestIn;
+import com.ifba.phonebook_api.requests.NumeroContatoPutRequestBody;
+import com.ifba.phonebook_api.requests.NumeroContatoPostRequestBody;
 import com.ifba.phonebook_api.requests.NumeroContatoRequestOut;
 import com.ifba.phonebook_api.service.NumeroContatoService;
 
@@ -38,7 +39,7 @@ public class NumeroContatoController {
 
     @ApiOperation(value = "Salva um número de contato")
     @PostMapping
-    public ResponseEntity<NumeroContatoRequestOut> save(@Valid @RequestBody NumeroContatoRequestIn numero) {
+    public ResponseEntity<NumeroContatoRequestOut> save(@Valid @RequestBody NumeroContatoPostRequestBody numero) {
         NumeroContatoRequestOut numeroContatoRequestOut = numeroContatoService.save(numero);
         return new ResponseEntity<NumeroContatoRequestOut>(numeroContatoRequestOut, HttpStatus.OK);
     }
@@ -51,10 +52,10 @@ public class NumeroContatoController {
     }
 
     @ApiOperation(value = "Atualiza um número de contato")
-    @PutMapping("/{id}")
+    @PutMapping
     @Transactional
-    public ResponseEntity<?> atualizar(@Valid @PathVariable @RequestBody Long id, NumeroContatoRequestIn numeroContatoRequestIn) {
-        numeroContatoService.replace(id, numeroContatoRequestIn);
+    public ResponseEntity<?> atualizar(@Valid @RequestBody NumeroContatoPutRequestBody numeroContatoPutRequestBody) {
+        numeroContatoService.replace(numeroContatoPutRequestBody);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

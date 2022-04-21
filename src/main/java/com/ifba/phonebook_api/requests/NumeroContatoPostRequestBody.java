@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class NumeroContatoRequestIn {
+public class NumeroContatoPostRequestBody {
 
     @NotBlank
     private String numero;

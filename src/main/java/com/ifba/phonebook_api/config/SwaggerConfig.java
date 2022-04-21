@@ -21,7 +21,7 @@ public class SwaggerConfig {
     public Docket swagget() {
         return new Docket(DocumentationType.SWAGGER_2)
             .select()
-            .apis(RequestHandlerSelectors.basePackage("com.ifba.phonebook_api"))
+            .apis(RequestHandlerSelectors.basePackage("com.ifba.phonebook_api.controller"))
             .paths(PathSelectors.any())
             .build()
             .apiInfo(metaData());

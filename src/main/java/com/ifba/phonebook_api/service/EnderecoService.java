@@ -44,8 +44,8 @@ public class EnderecoService {
         return EnderecoRequestOut.converte(enderecos);
     }
 
-    public void replace(Long id, EnderecoPutRequestBody enderecoPutRequestBody) {
-        Endereco enderecoSaved = findByIdOrThrowNotFoundRequestException(id);
+    public void replace(EnderecoPutRequestBody enderecoPutRequestBody) {
+        Endereco enderecoSaved = findByIdOrThrowNotFoundRequestException(enderecoPutRequestBody.getId());
         Endereco endereco = Endereco.builder()
                     .id(enderecoSaved.getId())
                     .cep(enderecoPutRequestBody.getCep())
